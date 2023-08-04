@@ -1,6 +1,8 @@
 from django.conf import settings
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (
+    MaxValueValidator, MinValueValidator, RegexValidator)
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from users.models import User
 
@@ -39,7 +41,9 @@ class Recipe(models.Model):
         verbose_name='Время приготовления (минут)',
         validators=[
             MinValueValidator(1,
-                              'поле принимает значения больше единицы')
+                              'Время приготовления должно быть не менее 1 минуты!'),
+            MaxValueValidator(
+                32767, 'Время приготовления должно быть не более 32767 минут!')
         ]
     )
     pub_date = models.DateTimeField(
@@ -107,7 +111,7 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингредиенты'
         ordering = ('name',)
         constraints = [
-            models.UniqueConstraint(
+            UniqueConstraint(
                 fields=['name', 'measurement_unit'],
                 name='unique measurement_unit')]
 
@@ -116,6 +120,7 @@ class Ingredient(models.Model):
 
 
 class IngredientInRecipe(models.Model):
+    """ Модель связи ингредиента и рецепта. """
     recipe = models.ForeignKey(
         Recipe,
         related_name='recipe_ingredients',
@@ -129,7 +134,9 @@ class IngredientInRecipe(models.Model):
     )
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
-        validators=[MinValueValidator(1)]
+        validators=[
+            MinValueValidator(1, 'Не менее 1'),
+            MaxValueValidator(32767, 'Не более 32767')]
     )
 
     class Meta:
@@ -142,28 +149,6 @@ class IngredientInRecipe(models.Model):
 
     def __str__(self):
         return f'{self.ingredients}: {self.amount}'
-
-
-# class Subscribe(models.Model):
-#     user = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         related_name='follower',
-#         verbose_name='Подписчик'
-#     )
-#     author = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         related_name='following',
-#         verbose_name='Автор'
-#     )
-
-#     class Meta:
-#         verbose_name = 'Подписки'
-#         constraints = [
-#             models.UniqueConstraint(
-#                 fields=['user', 'author'],
-#                 name='unique subscribtion')]
 
 
 class AbstractModel(models.Model):
@@ -184,7 +169,7 @@ class AbstractModel(models.Model):
 
 
 class Favorite(AbstractModel):
-    """Favorite model."""
+    """ Модель избранного. """
 
     class Meta:
         verbose_name = 'Избранное'
@@ -198,7 +183,7 @@ class Favorite(AbstractModel):
 
 
 class ShoppingCart(AbstractModel):
-    """ShoppingCart model."""
+    """ Модель корзины. """
 
     class Meta:
         verbose_name = 'Корзина покупок'
