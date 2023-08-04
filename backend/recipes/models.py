@@ -144,26 +144,26 @@ class IngredientInRecipe(models.Model):
         return f'{self.ingredients}: {self.amount}'
 
 
-class Subscribe(models.Model):
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follower',
-        verbose_name='Подписчик'
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='following',
-        verbose_name='Автор'
-    )
+# class Subscribe(models.Model):
+#     user = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='follower',
+#         verbose_name='Подписчик'
+#     )
+#     author = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         related_name='following',
+#         verbose_name='Автор'
+#     )
 
-    class Meta:
-        verbose_name = 'Подписки'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique subscribtion')]
+#     class Meta:
+#         verbose_name = 'Подписки'
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=['user', 'author'],
+#                 name='unique subscribtion')]
 
 
 class AbstractModel(models.Model):

@@ -12,8 +12,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                            ShoppingCart, Subscribe, Tag)
-from users.models import User
+                            ShoppingCart, Tag)
+from users.models import User, Subscribe
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import StandartPagination
 from .permissions import IsAuthorOrAdminOrReadOnly

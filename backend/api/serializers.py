@@ -6,8 +6,8 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                            ShoppingCart, Subscribe, Tag)
-from users.models import User
+                            ShoppingCart, Tag)
+from users.models import User, Subscribe
 
 
 # USERS ZONE
