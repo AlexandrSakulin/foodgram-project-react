@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-
+from django.utils.safestring import mark_safe
 from .models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
 
 
@@ -11,6 +11,7 @@ class IngredientInRecipeInLine(admin.StackedInline):
     autocomplete_fields = ('ingredients',)
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='В избранном')
@@ -20,6 +21,10 @@ class RecipeAdmin(admin.ModelAdmin):
     @admin.display(description="Ингредиенты")
     def ingredient_in_recipe(self):
         return ", ".join(map(str, self.recipe_ingredients.all()))
+
+    @admin.display(description="Изображения")
+    def image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="80" height="60">')
 
     list_display = (
         'id',
@@ -42,25 +47,23 @@ class RecipeAdmin(admin.ModelAdmin):
         'tags'
     )
 
-    # raw_id_fields = ('author', 'tags')
     inlines = (IngredientInRecipeInLine,)
     empty_value_display = '-пусто-'
     readonly_fields = ('pub_date', 'update')
 
 
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'color', 'slug')
     list_display_links = ('name', 'slug')
     search_fields = ('name', 'slug')
 
 
+@admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     list_display_links = ('name',)
     search_fields = ('name',)
 
 
-admin.site.register(Recipe, RecipeAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
 admin.site.unregister(Group)
