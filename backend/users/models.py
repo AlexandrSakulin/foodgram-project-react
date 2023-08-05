@@ -15,7 +15,7 @@ class User(AbstractUser):
         unique=True,
         validators=[
             RegexValidator(
-                regex='^[\w.@+-]+\w',
+                regex=(r'^[а-яА-Я ]+$'),
                 message='Имя пользователя должно соответсвовать критериям',
             )
         ],
