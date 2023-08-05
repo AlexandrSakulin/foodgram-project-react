@@ -8,7 +8,7 @@ from .models import User, Subscribe
 class UserAdmin(UserAdmin):
 
     def subscriptions_count(self, user):
-        return user.following.count()
+        return user.author.count()
 
     def recipes_count(self, user):
         return user.recipes.count()

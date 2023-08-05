@@ -15,7 +15,7 @@ from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import User, Subscribe
 from .filters import IngredientFilter, RecipeFilter
-from .pagination import StandartPagination
+from .pagination import PageLimitPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           RecipeCreateUpdateSerializer, RecipeReadSerializer,
@@ -29,7 +29,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthorOrAdminOrReadOnly]
     filterset_class = RecipeFilter
-    pagination_class = StandartPagination
+    pagination_class = PageLimitPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -39,13 +39,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeCreateUpdateSerializer
 
     @staticmethod
-    def create_relation(request, pk, model, serializer):
-        user = request.user
+    def create_relation(request, pk, serializer):
         recipe = get_object_or_404(Recipe, pk=pk)
-        if model.objects.filter(recipe=recipe, user=user).exists():
-            return Response({
-                'errors': 'Данный объект уже существует.'
-            }, status.HTTP_400_BAD_REQUEST)
         data = {
             'user': request.user.id,
             'recipe': recipe.id
@@ -58,8 +53,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def delete_relation(request, pk, model):
-        model.objects.filter(user=request.user, recipe=get_object_or_404(
-            Recipe, pk=pk)).delete()
+        get_object_or_404(
+            model, user=request.user, recipe=get_object_or_404(
+                Recipe, pk=pk)
+        ).delete()
         message = {
             'detail':
                 'Данные удалены.'
@@ -91,7 +88,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Скачать список покупок."""
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__shoppingcart__user=user).values(
+            recipe__recipes_shoppingcart_related__user=user).values(
             name=F('ingredients__name'),
             measurement_unit=F('ingredients__measurement_unit')).order_by(
             'ingredients__name').annotate(
@@ -109,7 +106,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeViewSet.create_relation(
             request,
             pk,
-            ShoppingCart,
             ShoppingCartSerializer
         )
 
@@ -127,7 +123,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeViewSet.create_relation(
             request,
             pk,
-            Favorite,
             FavoriteSerializer
         )
 
@@ -147,7 +142,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Стандартный ридонли вьюсет ингридиентов модели Ingredient."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (IngredientFilter, )
+    filter_backends = (IngredientFilter,)
     search_fields = ('^name',)
     permission_classes = [AllowAny, ]
 
@@ -157,7 +152,7 @@ class FoodgramUserViewSet(UserViewSet):
     queryset = User.objects.all()
     permission_classes = [AllowAny, ]
     filter_backends = [DjangoFilterBackend]
-    pagination_class = StandartPagination
+    pagination_class = PageLimitPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'me'):
@@ -166,7 +161,7 @@ class FoodgramUserViewSet(UserViewSet):
             return SetPasswordSerializer
         if self.action in ('subscriptions', 'subscribe'):
             return SubscriptionSerializer
-        return UserCreateSerializer  # есть аналогичный из djoser
+        return UserCreateSerializer
 
     @action(
         detail=False,
@@ -206,9 +201,7 @@ class FoodgramUserViewSet(UserViewSet):
     def unsubscribe(self, request, id):
         author = get_object_or_404(User, id=id)
         user = request.user
-        Subscribe.objects.get_object_or_404(
-            user=user, author=author
-        ).delete()
+        get_object_or_404(Subscribe, user=user, author=author).delete()
         message = {
             'detail': f'Вы отписались от пользователя {author}'
         }
