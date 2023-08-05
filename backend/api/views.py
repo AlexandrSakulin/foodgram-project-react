@@ -13,7 +13,8 @@ from rest_framework.response import Response
 
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
-from users.models import User, Subscribe
+from users.models import Subscribe, User
+
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import PageLimitPagination
 from .permissions import IsAuthorOrAdminOrReadOnly

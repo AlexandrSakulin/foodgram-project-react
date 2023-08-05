@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.core.validators import (
-    MaxValueValidator, MinValueValidator, RegexValidator)
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -41,7 +41,7 @@ class Recipe(models.Model):
         verbose_name='Время приготовления (минут)',
         validators=[
             MinValueValidator(1,
-                              'Время приготовления должно быть не менее 1 минуты!'),
+                              'Время приготовления не менее 1 минуты!'),
             MaxValueValidator(
                 32767, 'Время приготовления должно быть не более 32767 минут!')
         ]
