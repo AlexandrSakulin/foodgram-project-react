@@ -21,7 +21,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description="Ингредиенты")
     def ingredient_in_recipe(self):
-        return ','.join(map(str, self.recipe_ingredients.all()))
+        return (', '.join(map(str, self.recipe_ingredients.all())))
 
     @admin.display(description="Изображения")
     def image(self, obj):

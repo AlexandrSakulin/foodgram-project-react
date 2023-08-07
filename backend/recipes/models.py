@@ -2,7 +2,7 @@ from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models import UniqueConstraint
-
+# МНЕ ОЧЕНЬ СТЫДНО, ПРОШУ ПРОЩЕНИЯ
 from users.models import User
 from foodgram.global_constants import (
     MAX_LENGTH_AUTHOR,
@@ -185,7 +185,7 @@ class Favorite(UserInRecipe):
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
-        related_name = 'favorites'
+        default_related_name = 'favorites'
         constraints = [
             models.UniqueConstraint(
                 name='unique_favorite',
@@ -200,7 +200,7 @@ class ShoppingCart(UserInRecipe):
     class Meta:
         verbose_name = 'Корзина покупок'
         verbose_name_plural = 'Корзины покупок'
-        related_name = 'shopping_cart'
+        default_related_name = 'shopping_cart'
         constraints = [
             models.UniqueConstraint(
                 name='unique_shopping_cart',
