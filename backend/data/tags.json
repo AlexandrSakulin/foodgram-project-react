@@ -1,0 +1,2 @@
+[{"name": "Салаты", "color": "#32CD32", "slug": "salats"}, {"name": "Супы", "color": "#FFFFE0", "slug": "soups"}, {"name": "Морепродукты", "color": "#00BFFF", "slug": "sea_products"}, {"name": "Мясо птицы", "color": "#FFB6C1", "slug": "poultry_meat"},
+{"name": "Десерт", "color": "#FF00FF", "slug": "desserts"}, {"name": "Вторые блюда", "color": "#CD853F", "slug": "second_cours"}, {"name": "Первые блюда", "color": "#BC8F8F", "slug": "first_cours"}]
