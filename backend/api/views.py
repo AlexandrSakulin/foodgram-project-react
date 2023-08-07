@@ -165,7 +165,9 @@ class FoodgramUserViewSet(UserViewSet):
             following__user=user
         )
         page = self.paginate_queryset(subscriptions)
-        serializer = SubscriptionSerializer
+        serializer = SubscriptionSerializer(
+            page, many=True, context={'request': request}
+        )
         return self.get_paginated_response(serializer.data)
 
     @action(
