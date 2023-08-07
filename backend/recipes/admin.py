@@ -17,11 +17,11 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='В избранном')
     def favorited_count(self):
-        return Favorite.objects.filter(recipe=self.id).count()
+        return self.favorites.count()
 
     @admin.display(description="Ингредиенты")
     def ingredient_in_recipe(self):
-        return ", ".join(map(str, self.recipe_ingredients.all()))
+        return ','.join(map(str, self.recipe_ingredients.all()))
 
     @admin.display(description="Изображения")
     def image(self, obj):
@@ -32,7 +32,6 @@ class RecipeAdmin(admin.ModelAdmin):
         'author',
         'name',
         'pub_date',
-        'update',
         favorited_count,
         ingredient_in_recipe
     )
@@ -50,7 +49,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     inlines = (IngredientInRecipeInLine,)
     empty_value_display = '-пусто-'
-    readonly_fields = ('pub_date', 'update')
+    readonly_fields = ('pub_date',)
 
 
 @admin.register(Tag)

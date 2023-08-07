@@ -7,12 +7,6 @@ from .models import Subscribe, User
 @admin.register(User)
 class UserAdmin(UserAdmin):
 
-    def subscriptions_count(self, user):
-        return user.author.count()
-
-    def recipes_count(self, user):
-        return user.recipes.count()
-
     list_display = (
         'id',
         'first_name',
@@ -29,6 +23,13 @@ class UserAdmin(UserAdmin):
     search_fields = (
         'username',
     )
+
+    @admin.display(description=)
+    def subscriptions_count(self, user):
+        return user.author.count()
+
+    def recipes_count(self, user):
+        return user.recipes.count()
 
 
 @admin.register(Subscribe)
