@@ -1,8 +1,13 @@
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import UniqueConstraint
+from foodgram.global_constants import (
+    MAX_LENGTH_USERNAME,
+    MAX_LENGTH_EMAIL,
+    MAX_LENGTH_CONFIRMATION_CODE,
+
+)
 
 
 class User(AbstractUser):
@@ -11,7 +16,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     username = models.CharField(
-        max_length=settings.MAX_LENGTH_USERNAME,
+        max_length=MAX_LENGTH_USERNAME,
         unique=True,
         validators=[
             RegexValidator(
@@ -21,7 +26,7 @@ class User(AbstractUser):
         ],
     )
     email = models.EmailField(
-        max_length=settings.MAX_LENGTH_EMAIL,
+        max_length=MAX_LENGTH_EMAIL,
         unique=True,
     )
     bio = models.TextField(
@@ -30,7 +35,7 @@ class User(AbstractUser):
     )
     confirmation_code = models.CharField(
         verbose_name='Токен пользователя',
-        max_length=settings.MAX_LENGTH_CONFIRMATION_CODE,
+        max_length=MAX_LENGTH_CONFIRMATION_CODE,
         blank=True,
         null=True,
     )

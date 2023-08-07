@@ -63,23 +63,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+        }
     }
-}
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': os.getenv('POSTGRES_DB', default='foodgram'),
-#         'USER': os.getenv('POSTGRES_USER', default='foodgram_user'),
-#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='1234'),
-#         'HOST': os.getenv('DB_HOST', default='localhost'),
-#         'PORT': os.getenv('DB_PORT', default='5432')
-#     }
-# }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB", "foodgram"),
+            "USER": os.getenv("POSTGRES_USER", "foodgram"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD", default='1234'),
+            "HOST": os.getenv("DB_HOST", default='localhost'),
+            "PORT": os.getenv("DB_PORT", default='5432'),
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -135,23 +136,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
-
-MAX_LENGTH_EMAIL = 254
-
-MAX_LENGTH_USERNAME = 150
-
-MAX_LENGTH_AUTHOR = 200
-
-MAX_LENGTH_CONFIRMATION_CODE = 100
-
-MAX_LENGTH_RECIPE_NAME = 155
-
-MAX_LENGTH_TAG_COLOR = 7
-
-MAX_LENGTH_TAG_NAME = 200
-
-MAX_LENGTH_TAG_SLUG = 200
-
-MAX_LENGTH_INGREDIENT_NAME = 255
-
-MAX_LENGTH_INGREDIENT_MEAUNIT = 155

@@ -1,10 +1,18 @@
-from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models import UniqueConstraint
 
 from users.models import User
+from foodgram.global_constants import (
+    MAX_LENGTH_AUTHOR,
+    MAX_LENGTH_RECIPE_NAME,
+    MAX_LENGTH_TAG_NAME,
+    MAX_LENGTH_TAG_COLOR,
+    MAX_LENGTH_TAG_SLUG,
+    MAX_LENGTH_INGREDIENT_NAME,
+    MAX_LENGTH_INGREDIENT_MEAUNIT,
+)
 
 
 class Recipe(models.Model):
@@ -13,11 +21,11 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор',
-        max_length=settings.MAX_LENGTH_AUTHOR
+        max_length=MAX_LENGTH_AUTHOR
     )
     name = models.CharField(
         verbose_name='Название',
-        max_length=settings.MAX_LENGTH_RECIPE_NAME
+        max_length=MAX_LENGTH_RECIPE_NAME
     )
     image = models.ImageField(
         verbose_name='Изображение',
@@ -67,12 +75,12 @@ class Recipe(models.Model):
 class Tag(models.Model):
     name = models.CharField(
         verbose_name='Название',
-        max_length=settings.MAX_LENGTH_TAG_NAME,
+        max_length=MAX_LENGTH_TAG_NAME,
         unique=True
     )
     color = models.CharField(
         verbose_name='HEX-код цвета',
-        max_length=settings.MAX_LENGTH_TAG_COLOR,
+        max_length=MAX_LENGTH_TAG_COLOR,
         unique=True,
         help_text='Например, #49B64E',
         validators=[
@@ -84,7 +92,7 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         verbose_name='Слаг',
-        max_length=settings.MAX_LENGTH_TAG_SLUG,
+        max_length=MAX_LENGTH_TAG_SLUG,
         unique=True
     )
 
@@ -99,11 +107,11 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         verbose_name='Название',
-        max_length=settings.MAX_LENGTH_INGREDIENT_NAME,
+        max_length=MAX_LENGTH_INGREDIENT_NAME,
     )
     measurement_unit = models.CharField(
         verbose_name='Единица измерения',
-        max_length=settings.MAX_LENGTH_INGREDIENT_MEAUNIT,
+        max_length=MAX_LENGTH_INGREDIENT_MEAUNIT,
     )
 
     class Meta:
