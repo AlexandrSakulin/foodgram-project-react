@@ -24,10 +24,11 @@ class UserAdmin(UserAdmin):
         'username',
     )
 
-    @admin.display(description=)
+    @admin.display(description='Колличество подписок')
     def subscriptions_count(self, user):
         return user.author.count()
 
+    @admin.display(description='Колличество рецептов')
     def recipes_count(self, user):
         return user.recipes.count()
 

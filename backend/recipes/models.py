@@ -12,10 +12,13 @@ from foodgram.global_constants import (
     MAX_LENGTH_TAG_SLUG,
     MAX_LENGTH_INGREDIENT_NAME,
     MAX_LENGTH_INGREDIENT_MEAUNIT,
+    MIN_TIME_COOKING,
+    MAX_TIME_COOKING,
 )
 
 
 class Recipe(models.Model):
+    """Рецепты"""
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -29,7 +32,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         verbose_name='Изображение',
-        upload_to='recipes/image/recipes',
+        upload_to='recipes',
         blank=True,
         null=True
     )
@@ -48,19 +51,17 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления (минут)',
         validators=[
-            MinValueValidator(1,
-                              'Время приготовления не менее 1 минуты!'),
+            MinValueValidator(
+                MIN_TIME_COOKING,
+                'Время приготовления не менее 1 минуты!'),
             MaxValueValidator(
-                32767, 'Время приготовления должно быть не более 32767 минут!')
+                MAX_TIME_COOKING,
+                'Время приготовления должно быть не более 32767 минут!')
         ]
     )
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации'
-    )
-    update = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Дата обновления'
     )
 
     class Meta:
@@ -73,6 +74,7 @@ class Recipe(models.Model):
 
 
 class Tag(models.Model):
+    """Тэги"""
     name = models.CharField(
         verbose_name='Название',
         max_length=MAX_LENGTH_TAG_NAME,
@@ -105,6 +107,7 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
+    """Ингридиенты"""
     name = models.CharField(
         verbose_name='Название',
         max_length=MAX_LENGTH_INGREDIENT_NAME,
@@ -159,7 +162,7 @@ class IngredientInRecipe(models.Model):
         return f'{self.ingredients}: {self.amount}'
 
 
-class AbstractModel(models.Model):
+class UserInRecipe(models.Model):
     """Abstract model for Favorite and ShoppingCart"""
     recipe = models.ForeignKey(
         Recipe,
@@ -176,12 +179,13 @@ class AbstractModel(models.Model):
         abstract = True
 
 
-class Favorite(AbstractModel):
+class Favorite(UserInRecipe):
     """ Модель избранного. """
 
     class Meta:
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
+        related_name = 'favorites'
         constraints = [
             models.UniqueConstraint(
                 name='unique_favorite',
@@ -190,12 +194,13 @@ class Favorite(AbstractModel):
         ]
 
 
-class ShoppingCart(AbstractModel):
+class ShoppingCart(UserInRecipe):
     """ Модель корзины. """
 
     class Meta:
         verbose_name = 'Корзина покупок'
         verbose_name_plural = 'Корзины покупок'
+        related_name = 'shopping_cart'
         constraints = [
             models.UniqueConstraint(
                 name='unique_shopping_cart',

@@ -29,16 +29,6 @@ class User(AbstractUser):
         max_length=MAX_LENGTH_EMAIL,
         unique=True,
     )
-    bio = models.TextField(
-        verbose_name='Биография',
-        blank=True,
-    )
-    confirmation_code = models.CharField(
-        verbose_name='Токен пользователя',
-        max_length=MAX_LENGTH_CONFIRMATION_CODE,
-        blank=True,
-        null=True,
-    )
 
     class Meta:
         ordering = ('username',)
@@ -72,7 +62,11 @@ class Subscribe(models.Model):
             UniqueConstraint(
                 fields=['user', 'author'],
                 name='user_author_unique'
-            )
+            ),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('author')),
+                name='prevent_self_follow'
+            ),
         ]
 
     def __str__(self):
