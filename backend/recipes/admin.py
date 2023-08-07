@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.utils.safestring import mark_safe
 
-from .models import Favorite, Ingredient, IngredientInRecipe, Recipe, Tag
+from .models import Ingredient, IngredientInRecipe, Recipe, Tag
 
 
 class IngredientInRecipeInLine(admin.StackedInline):

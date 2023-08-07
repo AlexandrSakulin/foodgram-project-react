@@ -2,19 +2,17 @@ from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models import UniqueConstraint
+
+from foodgram.global_constants import (MAX_LENGTH_AUTHOR,
+                                       MAX_LENGTH_INGREDIENT_MEAUNIT,
+                                       MAX_LENGTH_INGREDIENT_NAME,
+                                       MAX_LENGTH_RECIPE_NAME,
+                                       MAX_LENGTH_TAG_COLOR,
+                                       MAX_LENGTH_TAG_NAME,
+                                       MAX_LENGTH_TAG_SLUG, MAX_TIME_COOKING,
+                                       MIN_TIME_COOKING)
 # МНЕ ОЧЕНЬ СТЫДНО, ПРОШУ ПРОЩЕНИЯ
 from users.models import User
-from foodgram.global_constants import (
-    MAX_LENGTH_AUTHOR,
-    MAX_LENGTH_RECIPE_NAME,
-    MAX_LENGTH_TAG_NAME,
-    MAX_LENGTH_TAG_COLOR,
-    MAX_LENGTH_TAG_SLUG,
-    MAX_LENGTH_INGREDIENT_NAME,
-    MAX_LENGTH_INGREDIENT_MEAUNIT,
-    MIN_TIME_COOKING,
-    MAX_TIME_COOKING,
-)
 
 
 class Recipe(models.Model):

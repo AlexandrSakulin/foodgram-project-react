@@ -4,7 +4,6 @@ from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.serializers import SetPasswordSerializer, UserCreateSerializer
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -20,9 +19,9 @@ from .pagination import PageLimitPagination
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import (FavoriteSerializer, IngredientSerializer,
                           RecipeCreateUpdateSerializer, RecipeReadSerializer,
-                          RecipeShortSerializer, ShoppingCartSerializer,
-                          SubscribeSerializer, SubscriptionSerializer,
-                          TagSerializer, UserReadSerializer)
+                          ShoppingCartSerializer, SubscribeSerializer,
+                          SubscriptionSerializer, TagSerializer,
+                          UserReadSerializer)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

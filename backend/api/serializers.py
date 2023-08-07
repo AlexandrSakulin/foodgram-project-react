@@ -3,13 +3,11 @@ from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
-from rest_framework.validators import UniqueTogetherValidator
-from foodgram.global_constants import (
-    MIN_AMOUNT_INGRIDIENTS,
-    MAX_AMOUNT_INGRIDIENTS,
-    MIN_TIME_COOKING,
-    MAX_TIME_COOKING
-)
+
+from foodgram.global_constants import (MAX_AMOUNT_INGRIDIENTS,
+                                       MAX_TIME_COOKING,
+                                       MIN_AMOUNT_INGRIDIENTS,
+                                       MIN_TIME_COOKING)
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Subscribe, User
