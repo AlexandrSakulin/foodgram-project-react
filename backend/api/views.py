@@ -35,8 +35,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
             return RecipeReadSerializer
-        if self.action in ('shopping_cart', 'favorite'):
-            return RecipeShortSerializer
         return RecipeCreateUpdateSerializer
 
     @staticmethod
@@ -111,7 +109,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     @shopping_cart.mapping.delete
-    def undo_shopping_cart(self, request, pk):
+    def delete_shopping_cart(self, request, pk):
         return RecipeViewSet.delete_relation(request, pk, ShoppingCart)
 
     @action(
@@ -128,7 +126,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
 
     @favorite.mapping.delete
-    def unfavorite(self, request, pk):
+    def delete_favorite(self, request, pk):
         return RecipeViewSet.delete_relation(request, pk, Favorite)
 
 
@@ -154,15 +152,7 @@ class FoodgramUserViewSet(UserViewSet):
     permission_classes = [AllowAny, ]
     filter_backends = [DjangoFilterBackend]
     pagination_class = PageLimitPagination
-
-    def get_serializer_class(self):
-        if self.action in ('list', 'retrieve', 'me'):
-            return UserReadSerializer
-        if self.action == 'set_password':
-            return SetPasswordSerializer
-        if self.action in ('subscriptions', 'subscribe'):
-            return SubscriptionSerializer
-        return UserCreateSerializer
+    serializer_class = UserReadSerializer
 
     @action(
         detail=False,
@@ -176,7 +166,7 @@ class FoodgramUserViewSet(UserViewSet):
             following__user=user
         )
         page = self.paginate_queryset(subscriptions)
-        serializer = self.get_serializer(page, many=True)
+        serializer = SubscriptionSerializer
         return self.get_paginated_response(serializer.data)
 
     @action(
@@ -195,7 +185,6 @@ class FoodgramUserViewSet(UserViewSet):
         serializer = SubscribeSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        serializer = self.get_serializer(author)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
