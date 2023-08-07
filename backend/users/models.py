@@ -5,8 +5,6 @@ from django.db.models import UniqueConstraint
 from foodgram.global_constants import (
     MAX_LENGTH_USERNAME,
     MAX_LENGTH_EMAIL,
-    MAX_LENGTH_CONFIRMATION_CODE,
-
 )
 
 
