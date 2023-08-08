@@ -90,23 +90,26 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
 
-            sudo rm -f .env        
-            sudo touch .env
-            sudo chmod 666 .env
+            sudo docker compose down
+            sudo systemctl stop nginx
+            sudo docker system prune -af
+
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
             
-            sudo echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            sudo echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
-            sudo echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-            sudo echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-            sudo echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-            sudo echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-            sudo echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-            sudo echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+            rm .env
+            touch .env
             
-            sudo docker compose stop
-            sudo docker compose rm backend
-            sudo docker compose pull backend
-            sudo docker compose rm frontend
-            sudo docker compose pull frontend
+            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+            echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
+            echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+            echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+            echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+            echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+            echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+            echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
             
             sudo docker compose up -d --build
+            sudo docker compose exec -T backend python manage.py makemigrations
+            sudo docker compose exec -T backend python manage.py migrate
+            sudo docker compose exec -T backend python manage.py collectstatic --no-input
