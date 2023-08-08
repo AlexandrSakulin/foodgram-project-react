@@ -86,7 +86,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Скачать список покупок."""
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__recipes_shoppingcart_related__user=user).values(
+            recipe__shopping_cart__user=user).values(
             name=F('ingredients__name'),
             measurement_unit=F('ingredients__measurement_unit')).order_by(
             'ingredients__name').annotate(

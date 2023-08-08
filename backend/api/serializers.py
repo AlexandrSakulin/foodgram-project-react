@@ -1,4 +1,3 @@
-from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -122,7 +121,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     """Чтение рецептов. """
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(source='ingredient')
+    ingredients = IngredientInRecipeSerializer(source='recipe_ingredients')
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -141,17 +140,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'text',
             'cooking_time'
         )
-
-    def get_ingredients(self, obj):
-
-        recipe = obj
-        ingredients = recipe.ingredients.values(
-            'id',
-            'name',
-            'measurement_unit',
-            amount=F('recipe_ingredients__amount')
-        )
-        return ingredients
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -174,9 +162,13 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
-    amount = serializers.ValidationError(
-        [MIN_AMOUNT_INGRIDIENTS, 'Минимальное количество ингридиентов 1'],
-        [MAX_AMOUNT_INGRIDIENTS, 'Максимальное количество ингридиентов 100'])
+    amount = serializers.IntegerField(
+        validators=(
+            [MIN_AMOUNT_INGRIDIENTS,
+             'Минимальное количество ингридиентов 1'],
+            [MAX_AMOUNT_INGRIDIENTS,
+             'Максимальное количество ингридиентов 100']
+        ))
 
     class Meta:
         model = IngredientInRecipe
@@ -191,9 +183,10 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField(max_length=None, use_url=True, required=False)
     author = UserReadSerializer(read_only=True, required=False)
-    cooking_time = serializers.ValidationError(
+    cooking_time = serializers.IntegerField(validators=(
         [MIN_TIME_COOKING, 'Минимальное время готовки не менее 1'],
-        [MAX_TIME_COOKING, 'Максимальное время готовки не более 32767'])
+        [MAX_TIME_COOKING, 'Максимальное время готовки не более 32767']
+    ))
 
     class Meta:
         model = Recipe

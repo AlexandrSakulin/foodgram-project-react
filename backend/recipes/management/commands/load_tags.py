@@ -18,9 +18,9 @@ class Command(BaseCommand):
         for note in data:
             try:
                 Tag.objects.get_or_create(**note)
-                print(f"{note['name']} в базе")
+                print(f'{note["name"]} в базе')
             except Exception as error:
-                print(f"Ошибка при добавлении {note['name']}.\n"
-                      f"Текст - {error}")
+                print(f'Ошибка при добавлении {note["name"]}.\n'
+                      f'Текст - {error}')
 
         print('Загрузка тэгов завершена')
