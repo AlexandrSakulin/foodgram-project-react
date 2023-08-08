@@ -104,7 +104,6 @@ jobs:
             sudo echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
             
             sudo docker compose stop
-            
             sudo docker compose rm backend
             sudo docker compose pull backend
             sudo docker compose rm frontend
