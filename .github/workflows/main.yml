@@ -94,8 +94,9 @@ jobs:
             sudo systemctl stop nginx
             sudo docker system prune -af
 
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
+            
             
             rm .env
             touch .env
