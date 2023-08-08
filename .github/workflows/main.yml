@@ -53,7 +53,9 @@ jobs:
   build_and_push_frontend_to_docker_hub:
       name: Pushing frontend image to Docker Hub
       runs-on: ubuntu-latest
-      needs: tests
+      needs: 
+        - tests
+        - build_and_push_backend_to_docker_hub
       steps:
         - name: Check out the repo
           uses: actions/checkout@v3
@@ -67,7 +69,7 @@ jobs:
         - name: Push to Docker Hub
           uses: docker/build-push-action@v2
           with:
-            context: ./frontend/Dockerfile
+            context: frontend/Dockerfile
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
 
