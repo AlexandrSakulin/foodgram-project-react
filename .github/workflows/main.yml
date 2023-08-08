@@ -89,6 +89,11 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            sudo rm -r foodgram
+            mkdir foodgram
+            cd foodgram
+            mkdir infra
+            cd infra
 
             sudo docker compose down
             sudo systemctl stop nginx
