@@ -7,6 +7,7 @@ on:
 
 jobs:
   tests:
+    name: Clone, setup and test
     runs-on: ubuntu-latest
 
     steps:
@@ -44,15 +45,15 @@ jobs:
         - name: Push backend to Docker Hub
           uses: docker/build-push-action@v2
           with:
-            context: backend/
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
+            file: backend/Dockerfile
         - name: Push frontend to Docker Hub
           uses: docker/build-push-action@v2
           with:
-            context: frontend/
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
+            file: frontend/Dockerfile
 
   deploy:
     name: Deploy on server
