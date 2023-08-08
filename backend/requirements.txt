@@ -67,7 +67,6 @@ pyflakes==2.5.0
 PyJWT==2.1.0
 pymongo==3.12.1
 pyparsing==3.0.9
-pypiwin32==223
 pytest==6.2.4
 pytest-django==4.4.0
 pytest-pythonpath==0.7.3
