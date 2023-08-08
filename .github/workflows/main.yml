@@ -47,9 +47,9 @@ jobs:
         - name: Push backend image to Docker Hub
           uses: docker/build-push-action@v2
           with:
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
-          file: backend/Dockerfile
+            push: true
+            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
+            file: backend/Dockerfile
 
         - name: Push frontend image to Docker Hub
           uses: docker/build-push-action@v2
