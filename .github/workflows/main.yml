@@ -102,8 +102,6 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
             
-            
-            sudo rm .env
             sudo touch .env
             
             sudo echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
