@@ -81,6 +81,17 @@ jobs:
       - build_and_push_frontend_to_docker_hub
 
     steps:
+      - uses: actions/checkout@v3
+      - name: copy docs, docker-compose, nginx files via ssh
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          tar: --overwrite
+          source: "infra/*, docs/*"
+          target: "~/"
       
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
