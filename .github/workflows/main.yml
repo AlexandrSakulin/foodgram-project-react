@@ -48,7 +48,7 @@ jobs:
           with:
             file: ./backend/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest  
+            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest  
 
   build_and_push_frontend_to_docker_hub:
       name: Pushing frontend image to Docker Hub
@@ -70,7 +70,7 @@ jobs:
           with:
             context: frontend/
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
+            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
 
   deploy:
     name: Deploy in server
@@ -110,7 +110,7 @@ jobs:
 
             sudo docker-compose stop
             sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
-            sudo docker rmi ${{ secrets.DOCKER_USER }}/foodgram-frontend:latest
-            sudo docker rmi ${{ secrets.DOCKER_USER }}/foodgram-backend:latest
+            sudo docker rmi ${{ secrets.DOCKER_USER }}/foodgram_frontend:latest
+            sudo docker rmi ${{ secrets.DOCKER_USER }}/foodgram_backend:latest
             sudo docker-compose up -d
             sudo docker image prune -a
