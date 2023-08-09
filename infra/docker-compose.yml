@@ -11,7 +11,7 @@ services:
       - ./.env
 
   backend:
-    image: sakulinalexandr/foodgram_backend:latest
+    image: alexandrsakulin/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/backend/static/
@@ -22,7 +22,7 @@ services:
       - ./.env
 
   frontend:
-    image: sakulinalexandr/foodgram_frontend:latest
+    image: alexandrsakulin/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
