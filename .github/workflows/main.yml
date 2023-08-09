@@ -95,7 +95,7 @@ jobs:
           script: |
             sudo docker-compose stop
             sudo docker-compose rm -f backend frontend
-            sudo docker image rm diablik666/foodgram_backend diablik666/foodgram_frontend
+            sudo docker image rm ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             sudo docker-compose pull backend frontend
             sudo rm -r .env
             touch .env
