@@ -102,7 +102,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           stack_file_name: docker-compose.yaml
           script: |
-            
+            cd foodgram
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend
             
