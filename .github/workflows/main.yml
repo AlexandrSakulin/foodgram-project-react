@@ -93,10 +93,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker-compose stop
-            sudo docker-compose rm -f backend frontend
-            sudo docker image rm ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
-            sudo docker-compose pull backend frontend
             sudo rm -r .env
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
@@ -107,5 +103,6 @@ jobs:
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
             echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
+
             sudo docker-compose up -d
 
