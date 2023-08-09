@@ -6,6 +6,7 @@ services:
       - db_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
+    restart: always  
 
   backend:
     image: alexandrsakulin/foodgram_backend:latest
@@ -36,6 +37,7 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - backend
+    restart: always  
       
 
 volumes:
