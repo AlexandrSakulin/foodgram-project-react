@@ -49,7 +49,7 @@ jobs:
           with:
             push: true
             tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
-            file: backend/foodgram/Dockerfile
+            file: backend/Dockerfile
               
 
   build_and_push_frontend_to_docker_hub:
