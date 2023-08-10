@@ -67,8 +67,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker-compose stop
-            sudo docker-compose rm -f backend
 
             sudo rm -f .env        
             sudo touch .env
