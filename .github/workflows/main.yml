@@ -68,7 +68,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
 
-            sudo rm -f .env        
+            sudo rm -fr .env        
             sudo touch .env
             
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
