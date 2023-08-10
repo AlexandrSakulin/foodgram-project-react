@@ -5,18 +5,17 @@ services:
     image: postgres:13.0-alpine
     
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - /var/lib/postgresql/data/
     env_file:
       - ./.env
-    restart: always
+
 
   backend:
     image: alexandrsakulin/foodgram_backend:latest
     restart: always
     volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
-      - redoc:/app/api/docs/
+      - static_value:/app_backend/static/
+      - media_value:/app_backend/media/
     depends_on:
       - db
     env_file:
@@ -45,6 +44,4 @@ services:
 volumes:
   static_value:
   media_value:
-  postgres_data:
-  redoc:
 
