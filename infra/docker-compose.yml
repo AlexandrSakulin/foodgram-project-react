@@ -5,7 +5,7 @@ services:
     image: postgres:13.0-alpine
     
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - /var/lib/postgresql/data/
     env_file:
       - ./.env
     restart: always
@@ -25,7 +25,7 @@ services:
     image: alexandrsakulin/foodgram_frontend:latest
     restart: always
     volumes:
-      - ../frontend/:/app/result_build/
+      - frontend_value:/app/build/
   
   nginx:
     image: nginx:1.21.3-alpine
@@ -33,10 +33,10 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../frontend/build:/usr/share/nginx/html/
       - ./docs/:/usr/share/nginx/html/api/docs/
-      - static_value:/var/html/static
-      - media_value:/var/html/media
+      - frontend_value:/usr/share/nginx/html/
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
     depends_on:
       - frontend
       - backend
@@ -44,5 +44,4 @@ services:
 volumes:
   static_value:
   media_value:
-  postgres_data:
-  
+  frontend_value:
