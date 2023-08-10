@@ -67,10 +67,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker-compose stop
-            sudo docker-compose rm backend
-            sudo rm -r .env
-            touch .env
+            sudo rm -f .env        
+            sudo touch .env
+            
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
             echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
@@ -78,7 +77,14 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
-            sudo docker-compose up -d
-            sudo docker-compose exec backend python manage.py migrate
-            sudo docker-compose exec -T backend python manage.py collectstatic --no-input --clear
+            
+            sudo docker compose stop
+            
+            sudo docker compose rm backend
+            sudo docker compose pull backend
+            sudo docker compose rm frontend
+            sudo docker compose pull frontend
+            
+            sudo docker compose up -d --build
+
             
