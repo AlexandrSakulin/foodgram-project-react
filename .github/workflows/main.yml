@@ -87,5 +87,3 @@ jobs:
             sudo docker compose pull frontend
             
             sudo docker compose up -d 
-
-            
