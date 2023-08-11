@@ -175,8 +175,12 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
-    id = serializers.PrimaryKeyRelatedField(
-        queryset=Ingredient.objects.all())
+    id = serializers.ReadOnlyField(
+        source='ingridient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
     amount = serializers.IntegerField(
         validators=(
             [MIN_AMOUNT_INGRIDIENTS,
@@ -187,7 +191,7 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
