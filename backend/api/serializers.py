@@ -155,7 +155,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             amount=F('recipe_ingredients__amount')
         )
         return ingredients
-    
+
     def get_is_favorited(self, obj):
         request = self.context.get('request')
         return (
