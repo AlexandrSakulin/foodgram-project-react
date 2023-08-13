@@ -1,4 +1,4 @@
-from django.db.models import F
+# from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
