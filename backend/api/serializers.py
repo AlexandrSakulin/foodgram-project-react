@@ -221,7 +221,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
 
         ingredients_list = []
-        for ingredient in data.get('recipeingredients'):
+        for ingredient in data.get('recipe_ingredients'):
             if ingredient.get('amount') <= 0:
                 raise serializers.ValidationError(
                     'Необходимо добавить ингредиент.'
