@@ -197,12 +197,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField(max_length=None, use_url=True, required=False)
     cooking_time = serializers.IntegerField()
+    author = UserReadSerializer(read_only=True, required=False)
 
     class Meta:
         model = Recipe
         fields = (
             'ingredients',
             'tags',
+            'author'
             'image',
             'name',
             'text',
@@ -225,7 +227,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         """Создать рецепт."""
         ingredients = data.pop('ingredients')
         tags = data.pop('tags')
-        recipe = Recipe.objects.create(**data)
+        recipe = Recipe.objects.create( **data)
         recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
         return recipe
