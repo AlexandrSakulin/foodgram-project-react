@@ -247,15 +247,15 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         if len(data['tags']) != len(set(data['tags'])):
             raise serializers.ValidationError('Теги повторяются.')
 
-        if len(data['tags']) == 0:
+        if not data['tags']:
             raise serializers.ValidationError(
                 'Необходимо выбрать хотя бы один тег.')
-        ingredients_list = data['ingredients']
-        if len(ingredients_list) != len(
-                set(obj['id'] for obj in ingredients_list)):
+
+        if len(data['ingredients']) != len(set(data['ingredients'])):
             raise serializers.ValidationError(
                 'Ингредиенты не должны повторяться.')
-        if len(data['ingredients']) == 0:
+
+        if not data['ingredients']:
             raise serializers.ValidationError(
                 'Необходимо добавить ингредиент.'
             )
