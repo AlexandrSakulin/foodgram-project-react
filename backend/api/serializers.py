@@ -204,7 +204,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         fields = (
             'ingredients',
             'tags',
-            'author'
+            'author',
             'image',
             'name',
             'text',
