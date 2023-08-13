@@ -263,6 +263,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Необходимо добавить ингредиент.'
             )
+        return data
 
 
 class RecipeShortSerializer(RecipeReadSerializer):
