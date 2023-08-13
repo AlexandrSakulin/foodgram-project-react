@@ -196,7 +196,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         many=True, queryset=Tag.objects.all()
     )
     image = Base64ImageField(max_length=None, use_url=True, required=False)
-    author = UserReadSerializer(read_only=True)
     cooking_time = serializers.IntegerField()
 
     class Meta:
@@ -204,7 +203,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         fields = (
             'ingredients',
             'tags',
-            'author',
             'image',
             'name',
             'text',
@@ -227,8 +225,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         """Создать рецепт."""
         ingredients = data.pop('ingredients')
         tags = data.pop('tags')
-        author = self.context.get('request').user
-        recipe = Recipe.objects.create(author=author, **data)
+        recipe = Recipe.objects.create(**data)
         recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
         return recipe
