@@ -190,7 +190,6 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Создание и обновление рецепта."""
     ingredients = IngredientInRecipeCreateUpdateSerializer(
-        source='recipe_ingredients',
         many=True
     )
     tags = serializers.PrimaryKeyRelatedField(
