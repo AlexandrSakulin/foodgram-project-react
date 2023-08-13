@@ -104,6 +104,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 APPEND_SLASH = False
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.UserReadSerializer',
