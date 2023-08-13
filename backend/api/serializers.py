@@ -221,16 +221,15 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
 
         ingredients_list = []
-        for ingredient in data.get('recipe_ingredients'):
-            if ingredient.get('amount') <= 0:
-                raise serializers.ValidationError(
-                    'Необходимо добавить ингредиент.'
-                )
-            ingredients_list.append(ingredient.get('id'))
-        if len(set(ingredients_list)) != len(ingredients_list):
-            raise serializers.ValidationError(
-                'Ингредиенты не должны повторяться.'
-            )
+        for ingredient in data['recipe_ingredients']:
+            if ingredient['amount'] <= 0:
+                raise serializers.ValidationError('Количество не может'
+                                                  ' быть меньше 1.')
+            ingredients_list.append(ingredient['ingredient']['id'])
+
+        if len(ingredients_list) > len(set(ingredients_list)):
+            raise serializers.ValidationError('Ингредиенты не должны'
+                                              ' повторяться.')
         return data
 
     @staticmethod
