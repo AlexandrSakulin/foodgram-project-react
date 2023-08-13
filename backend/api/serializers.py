@@ -1,4 +1,4 @@
-from django.db.models import F
+# from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -123,9 +123,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
     # вроде все перепроверил но так почему то не работает
-    # ingredients = IngredientInRecipeSerializer(many=True,
-    #                                            source='recipe_ingredients')
-    ingredients = serializers.SerializerMethodField(read_only=True)
+    ingredients = IngredientInRecipeSerializer(many=True,
+                                               source='recipe_ingredients')
+    # ingredients = serializers.SerializerMethodField(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -145,16 +145,16 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def get_ingredients(self, obj):
-        """Custom queryset: filter IngredientInRecipe by recipe."""
-        recipe = obj
-        ingredients = recipe.ingredients.values(
-            'id',
-            'name',
-            'measurement_unit',
-            amount=F('recipe_ingredients__amount')
-        )
-        return ingredients
+    # def get_ingredients(self, obj):
+    #     """Custom queryset: filter IngredientInRecipe by recipe."""
+    #     recipe = obj
+    #     ingredients = recipe.ingredients.values(
+    #         'id',
+    #         'name',
+    #         'measurement_unit',
+    #         amount=F('recipe_ingredients__amount')
+    #     )
+    #     return ingredients
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -256,7 +256,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
 
         ingredients_list = []
-        for ingredien in data['ingredients']:
+        for ingredien in data['recipe_ingredients']:
             if ingredien['ingredient'] in ingredients_list:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться.'
