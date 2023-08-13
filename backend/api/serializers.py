@@ -256,8 +256,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
 
         ingredients_list = []
-        for ingredient in data['ingredients']:
-            if ingredient['ingredient'] in ingredients_list:
+        for ingredien in data['ingredients']:
+            if ingredien['ingredient'] in ingredients_list:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться.'
                 )
