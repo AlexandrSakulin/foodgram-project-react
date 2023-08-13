@@ -226,7 +226,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def create(self, data):
         """Создать рецепт."""
         request = self.context.get('request')
-        ingredients = data.pop('ingridients')
+        ingredients = data.pop('ingredients')
         tags = data.pop('tags')
         recipe = Recipe.objects.create(author=request.user, **data)
         recipe.tags.set(tags)
@@ -236,7 +236,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         """Обновить рецепт."""
         tags = data.pop('tags')
-        ingredients = data.pop('ingridients')
+        ingredients = data.pop('ingredients')
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
