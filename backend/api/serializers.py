@@ -222,7 +222,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         ingredients_list = data['ingredients']
 
         if len(ingredients_list) != len(
-                set(obj['id'] for obj in ingredients_list)):
+                set(obj['ingredient'] for obj in ingredients_list)):
             raise serializers.ValidationError(
                 'Ингредиенты не должны повторяться.')
 
