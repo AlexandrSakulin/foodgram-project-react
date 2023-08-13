@@ -217,7 +217,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             IngredientInRecipe(
                 recipe=recipes,
                 amount=ingredient['amount'],
-                ingredient=Ingredient.objects.get(id=ingredient['id']),
+                recipe_ingredients=Ingredient.objects.get(id=ingredient['id']),
             ) for ingredient in ingredients
         ])
         return recipes
