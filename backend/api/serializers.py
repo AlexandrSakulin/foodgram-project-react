@@ -251,9 +251,12 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Необходимо выбрать хотя бы один тег.')
 
-        if len(data['ingredients']) != len(set(data['ingredients'])):
-            raise serializers.ValidationError(
-                'Ингредиенты не должны повторяться.')
+        ingredients = self.initial_data.get('ingredients')
+        ingr_list = []
+        for ingr in ingredients:
+            if ingr['id'] in ingr_list:
+                raise serializers.ValidationError(
+                    'Ингредиенты не должны повторяться.')
 
         if not data['ingredients']:
             raise serializers.ValidationError(
