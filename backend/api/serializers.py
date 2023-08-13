@@ -227,10 +227,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 'Нужно выбрать минимум 1 ингредиент'
             )
         for ingredient in ingredients:
-            if int(ingredient['amount']) <= 0:
-                raise serializers.ValidationError(
-                    'Количество ингридиентов должно быть положительным'
-                )
             check_id = ingredient['ingredient']['id']
             if check_id in ingredients_list:
                 raise serializers.ValidationError(
