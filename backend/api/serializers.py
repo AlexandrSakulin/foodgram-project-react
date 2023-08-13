@@ -219,7 +219,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Необходимо выбрать хотя бы один тег.'
             )
-        ingredients_list = data['recipe_ingredients']
+        ingredients_list = data['ingredients']
 
         if len(ingredients_list) != len(
                 set(obj['ingredient'] for obj in ingredients_list)):
