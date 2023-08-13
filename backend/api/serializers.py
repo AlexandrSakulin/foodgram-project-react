@@ -225,7 +225,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def create(self, data):
         """Создать рецепт."""
-        request = self.context.get('request')
+        request = self.context.get('request', None)
         ingredients = data.pop('ingredients')
         tags = data.pop('tags')
         recipe = Recipe.objects.create(
