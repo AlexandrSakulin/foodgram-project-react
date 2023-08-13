@@ -64,7 +64,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-TEST_VERSION_SQLITE = True
+TEST_VERSION_SQLITE = False
 
 if TEST_VERSION_SQLITE:
     DATABASES = {
