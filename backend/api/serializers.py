@@ -211,17 +211,15 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    @staticmethod
-    def create_ingredients(ingredients, recipe):
+    def create_ingredients(self, ingredients, recipes):
         """Создать ингредиент."""
-        ingredients_in_recipe = [
+        IngredientInRecipe.objects.bulk_create([
             IngredientInRecipe(
-                recipe=recipe,
-                ingredients=item['id'],
-                amount=item['amount']
-            ) for item in ingredients
-        ]
-        IngredientInRecipe.objects.bulk_create(ingredients_in_recipe)
+                recipes=recipes,
+                ingredients=ingredient['id'],
+                amount=ingredient['amount'],
+            ) for ingredient in ingredients
+        ])
 
     def create(self, data):
         """Создать рецепт."""
@@ -252,12 +250,13 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 'Необходимо выбрать хотя бы один тег.')
 
         ingredients = self.initial_data.get('ingredients')
-        ingr_list = []
-        for ingr in ingredients:
-            if ingr['id'] in ingr_list:
+        ingredient_list = []
+        for ingredient in ingredients:
+            if ingredient['id'] in ingredient_list:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться.')
-            ingr_list.append(ingr['id'])
+            ingredient_list.append(ingredient['id'])
+        ingredients = self.initial_data.get('ingredients')
 
         if not data['ingredients']:
             raise serializers.ValidationError(
