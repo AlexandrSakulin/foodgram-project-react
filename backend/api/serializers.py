@@ -1,4 +1,4 @@
-# from django.db.models import F
+from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -107,9 +107,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте. """
     id = serializers.ReadOnlyField(
-        source='ingredient')
-    name = serializers.ReadOnlyField(source='ingredient'
-                                     '.name')
+        source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
 
@@ -123,9 +122,9 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
     # вроде все перепроверил но так почему то не работает
-    ingredients = IngredientInRecipeSerializer(many=True,
-                                               source='recipe_ingredients')
-    # ingredients = serializers.SerializerMethodField(read_only=True)
+    # ingredients = IngredientInRecipeSerializer(many=True,
+    #                                            source='ingredients_in_recipe')
+    ingredients = serializers.SerializerMethodField(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -145,16 +144,16 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    # def get_ingredients(self, obj):
-    #     """Custom queryset: filter IngredientInRecipe by recipe."""
-    #     recipe = obj
-    #     ingredients = recipe.ingredients.values(
-    #         'id',
-    #         'name',
-    #         'measurement_unit',
-    #         amount=F('recipe_ingredients__amount')
-    #     )
-    #     return ingredients
+    def get_ingredients(self, obj):
+        """Custom queryset: filter IngredientInRecipe by recipe."""
+        recipe = obj
+        ingredients = recipe.ingredients.values(
+            'id',
+            'name',
+            'measurement_unit',
+            amount=F('recipe_ingredients__amount')
+        )
+        return ingredients
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -185,12 +184,15 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ('id', 'amount')
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Создание и обновление рецепта."""
-    ingredients = IngredientInRecipeCreateUpdateSerializer(many=True)
+    ingredients = IngredientInRecipeCreateUpdateSerializer(
+        source='recipe_ingredients',
+        many=True
+    )
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all()
     )
@@ -225,7 +227,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def create(self, data):
         """Создать рецепт."""
         request = self.context.get('request')
-        ingredients = data.pop('ingredients')
+        ingredients = data.pop('ingridients')
         tags = data.pop('tags')
         recipe = Recipe.objects.create(author=request.user, **data)
         recipe.tags.set(tags)
@@ -235,7 +237,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         """Обновить рецепт."""
         tags = data.pop('tags')
-        ingredients = data.pop('ingredients')
+        ingredients = data.pop('ingridients')
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
@@ -243,33 +245,21 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, data)
 
     def validate(self, data):
-        ingredients_set = set()
-        ingredients = data['recipe_ingredients']
-
         if len(data['tags']) != len(set(data['tags'])):
             raise serializers.ValidationError('Теги повторяются.')
 
-        if not data['tags']:
-            raise serializers.ValidationError(
+        if len(data['tags']) == 0:
+            raise serializers.ValidationError( 
                 'Необходимо выбрать хотя бы один тег.')
-        if not data['ingredients']:
+        ingredients_list = data['ingredients']
+        if len(ingredients_list) != len(
+                set(obj['id'] for obj in ingredients_list)):
+            raise serializers.ValidationError(
+                'Ингредиенты не должны повторяться.')
+        if len(data['ingredients']) == 0:
             raise serializers.ValidationError(
                 'Необходимо добавить ингредиент.'
             )
-
-        for ingredient in ingredients:
-            ingredient_id = ingredient['ingredient'].get('id')
-            if ingredient_id in ingredients_set:
-                raise serializers.ValidationError('Ингредиент уже добавлен')
-            ingredients_set.add(ingredient_id)
-
-        # ingredients_list = []
-        # for ingredien in data['recipe_ingredients']:
-        #     if ingredien['ingredient'] in ingredients_list:
-        #         raise serializers.ValidationError(
-        #             'Ингредиенты не должны повторяться.'
-        #         )
-        # return data
 
 
 class RecipeShortSerializer(RecipeReadSerializer):
