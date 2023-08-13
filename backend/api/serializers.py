@@ -214,12 +214,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     @staticmethod
     def create_ingredients(ingredients, recipe):
         """Создать ингредиент."""
-        IngredientInRecipe.objects.bulk_create([
+        ingredients_in_recipe = [
             IngredientInRecipe(
                 recipe=recipe,
-                ingredients_id=ingredient.get('id'),
-                amount=ingredient.get('amount')
-            )for ingredient in ingredients])
+                ingredients=item['id'],
+                amount=item['amount']
+            ) for item in ingredients
+        ]
+        IngredientInRecipe.objects.bulk_create(ingredients_in_recipe)
 
     def create(self, data):
         """Создать рецепт."""
