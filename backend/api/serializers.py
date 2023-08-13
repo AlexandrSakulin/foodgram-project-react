@@ -261,8 +261,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться.'
                 )
-            else:
-                ingredients_list.append(ingredient['ingredient'])
         return data
 
 
