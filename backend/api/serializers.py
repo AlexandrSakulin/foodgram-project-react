@@ -210,25 +210,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def validate(self, data):
-
-        if len(data['tags']) != len(set(data['tags'])):
-            raise serializers.ValidationError('Теги повторяются.')
-
-        if not data['tags']:
-            raise serializers.ValidationError(
-                'Необходимо выбрать хотя бы один тег.')
-
-        ingredients_list = []
-        for ingredient in data['ingredients']:
-            if ingredient['ingredient'] in ingredients_list:
-                raise serializers.ValidationError(
-                    'Ингредиенты не должны повторяться.'
-                )
-            else:
-                ingredients_list.append(ingredient['ingredient'])
-        return data
-
     @staticmethod
     def create_ingredients(ingredients, recipe):
         """Создать ингредиент."""
@@ -244,7 +225,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def create(self, data):
         """Создать рецепт."""
         request = self.context.get('request')
-        ingredients = data.pop('recipe_ingredients')
+        ingredients = data.pop('ingredients')
         tags = data.pop('tags')
         recipe = Recipe.objects.create(author=request.user, **data)
         recipe.tags.set(tags)
@@ -254,12 +235,35 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         """Обновить рецепт."""
         tags = data.pop('tags')
-        ingredients = data.pop('recipe_ingredients')
+        ingredients = data.pop('ingredients')
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
         self.create_ingredients(recipe=instance, ingredients=ingredients)
         return super().update(instance, data)
+
+    def validate(self, data):
+
+        if len(data['tags']) != len(set(data['tags'])):
+            raise serializers.ValidationError('Теги повторяются.')
+
+        if not data['tags']:
+            raise serializers.ValidationError(
+                'Необходимо выбрать хотя бы один тег.')
+        if not data['ingredients']:
+            raise serializers.ValidationError(
+                'Необходимо добавить ингредиент.'
+            )
+
+        ingredients_list = []
+        for ingredient in data['ingredients']:
+            if ingredient['ingredient'] in ingredients_list:
+                raise serializers.ValidationError(
+                    'Ингредиенты не должны повторяться.'
+                )
+            else:
+                ingredients_list.append(ingredient['ingredient'])
+        return data
 
 
 class RecipeShortSerializer(RecipeReadSerializer):
