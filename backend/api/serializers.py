@@ -257,6 +257,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             if ingr['id'] in ingr_list:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны повторяться.')
+            ingr_list.append(ingr['id'])
 
         if not data['ingredients']:
             raise serializers.ValidationError(
