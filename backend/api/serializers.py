@@ -213,11 +213,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def create_ingredients(self, ingredients, recipes):
         """Создать ингредиент."""
-        for ingredient in ingredients:
-            IngredientInRecipe.objects.create(
+        IngredientInRecipe.objects.bulk_create([
+            IngredientInRecipe(
                 recipe=recipes,
-                ingredient_id=ingredients.get['id'],
-                amount=ingredient.get['amount'], )
+                amount=ingredient['amount'],
+                ingredient=Ingredient.objects.get(id=ingredient['id']),
+            ) for ingredient in ingredients
+        ])
+        return recipes
 
     def create(self, data):
         """Создать рецепт."""
