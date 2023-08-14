@@ -103,12 +103,17 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте. """
 
     id = serializers.ReadOnlyField(
-        source='ingredient.id')
-    name = serializers.ReadOnlyField(source='ingredient.name')
+        source='ingredient.id'
+    )
+    name = serializers.ReadOnlyField(
+        source='ingredient.name'
+    )
     measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit')
+        source='ingredient.measurement_unit'
+    )
     amount = serializers.ReadOnlyField(
-        source='ingredient.amount')
+        source='ingredient.amount'
+    )
 
     class Meta:
         model = IngredientInRecipe
@@ -140,12 +145,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         )
 
     def get_is_favorited(self, obj):
-        request = self.context.get('request')
-        return (
-            request.user.is_authenticated
-            and obj.recipes_favorite_related.filter(
-                user=request.user).exists()
-        )
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return user.favorites.filter(recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
