@@ -256,7 +256,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 class RecipeShortSerializer(RecipeReadSerializer):
     """Короткая версия рецепта."""
-
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
