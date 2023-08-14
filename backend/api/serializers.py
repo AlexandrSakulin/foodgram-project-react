@@ -177,8 +177,7 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Создание и обновление рецепта."""
-    ingredients = IngredientInRecipeCreateUpdateSerializer(
-        many=True, source='ingredients')
+    ingredients = IngredientInRecipeCreateUpdateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Tag.objects.all()
     )
