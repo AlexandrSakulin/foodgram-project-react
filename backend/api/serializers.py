@@ -1,4 +1,3 @@
-# from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -108,7 +107,8 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте. """
     id = serializers.ReadOnlyField(
         source='ingredient')
-    name = serializers.ReadOnlyField(source='ingredient.name')
+    name = serializers.ReadOnlyField(source='ingredient'
+                                     '.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
 
@@ -141,17 +141,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    # def get_ingredients(self, obj):
-
-    #     recipe = obj
-    #     ingredients = recipe.ingredients.values(
-    #         'id',
-    #         'name',
-    #         'measurement_unit',
-    #         amount=F('recipe_ingredients__amount')
-    #     )
-    #     return ingredients
-
     def get_is_favorited(self, obj):
         request = self.context.get('request')
         return (
@@ -173,7 +162,7 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
-    amount = serializers.ValidationError()
+    amount = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = IngredientInRecipe
@@ -188,9 +177,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField(max_length=None, use_url=True, required=False)
     author = UserReadSerializer(read_only=True, required=False)
-    cooking_time = serializers.ValidationError(
-        [MIN_TIME_COOKING, 'Минимальное время готовки не менее 1'],
-        [MAX_TIME_COOKING, 'Максимальное время готовки не более 32767'])
+    cooking_time = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Recipe
