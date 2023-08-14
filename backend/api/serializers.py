@@ -174,17 +174,16 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
-    id = serializers.ReadOnlyField(
-        source='ingridient.id')
+
+    id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
-    amount = serializers.IntegerField()
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ['id', 'name', 'amount', 'measurement_unit']
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -211,16 +210,14 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def create_ingredients(self, ingredients, recipes):
+    def create_ingredients(self, ingredients, recipe):
         """Создать ингредиент."""
-        IngredientInRecipe.objects.bulk_create([
-            IngredientInRecipe(
-                recipe=recipes,
-                amount=ingredient['amount'],
-                recipe_ingredients=Ingredient.objects.get(id=ingredient['id']),
-            ) for ingredient in ingredients
-        ])
-        return recipes
+        for ingredient in ingredients:
+            IngredientInRecipe.objects.create(
+                ingredient_id=ingredient('id'),
+                recipe=recipe,
+                amount=ingredient('amount'),
+            )
 
     def create(self, data):
         """Создать рецепт."""
