@@ -163,7 +163,7 @@ class FoodgramUserViewSet(UserViewSet):
         """Список подписок."""
         user = request.user
         subscriptions = User.objects.filter(
-            following__user=user
+            follower__user=user
         )
         page = self.paginate_queryset(subscriptions)
         serializer = SubscriptionSerializer(

@@ -10,7 +10,9 @@ from foodgram.global_constants import (MAX_LENGTH_AUTHOR,
                                        MAX_LENGTH_TAG_COLOR,
                                        MAX_LENGTH_TAG_NAME,
                                        MAX_LENGTH_TAG_SLUG, MAX_TIME_COOKING,
-                                       MIN_TIME_COOKING)
+                                       MIN_TIME_COOKING,
+                                       MIN_AMOUNT_INGRIDIENTS,
+                                       MAX_AMOUNT_INGRIDIENTS)
 from users.models import User
 
 
@@ -143,8 +145,8 @@ class IngredientInRecipe(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
         validators=[
-            MinValueValidator(1, 'Не менее 1'),
-            MaxValueValidator(32767, 'Не более 32767')]
+            MinValueValidator(MIN_AMOUNT_INGRIDIENTS, 'Не менее 1'),
+            MaxValueValidator(MAX_AMOUNT_INGRIDIENTS, 'Не более 32767')]
     )
 
     class Meta:
