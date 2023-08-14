@@ -1,4 +1,4 @@
-[![Foodgram](https://github.com/AlexandrSakulin/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)](https://github.com/AlexandrSakulin/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
+[![Foodgram](https://github.com/AlexandrSakulin/foodgram-project-react/actions/workflows/main.yml/badge.svg)](https://github.com/AlexandrSakulin/foodgram-project-react/actions/workflows/main.yml)
 
 ## Проект Foodgram
 
