@@ -43,6 +43,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'user': request.user.id,
             'recipe': recipe.id
         }
+
         context = {'request': request}
         serializer = serializer(data=data, context=context)
         serializer.is_valid(raise_exception=True)
