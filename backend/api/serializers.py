@@ -4,10 +4,10 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-# from foodgram.global_constants import (MAX_AMOUNT_INGRIDIENTS,
-#                                        MAX_TIME_COOKING,
-#                                        MIN_AMOUNT_INGRIDIENTS,
-#                                        MIN_TIME_COOKING)
+from foodgram.global_constants import (MAX_AMOUNT_INGRIDIENTS,
+                                       MAX_TIME_COOKING,
+                                       MIN_AMOUNT_INGRIDIENTS,
+                                       MIN_TIME_COOKING)
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Subscribe, User
@@ -173,11 +173,14 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
-    amount = serializers.ValidationError()
+    name = serializers.ReadOnlyField(source="ingredient.name")
+    amount = serializers.ValidationError(
+        [MIN_AMOUNT_INGRIDIENTS, 'Минимальное количество ингридиентов 1'],
+        [MAX_AMOUNT_INGRIDIENTS, 'Максимальное количество ингридиентов 100'])
 
     class Meta:
         model = IngredientInRecipe
-        fields = ('id', 'amount')
+        fields = ('id', 'amount', 'name')
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
@@ -188,7 +191,9 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField(max_length=None, use_url=True, required=False)
     author = UserReadSerializer(read_only=True, required=False)
-    cooking_time = serializers.ValidationError()
+    cooking_time = serializers.ValidationError(
+        [MIN_TIME_COOKING, 'Минимальное время готовки не менее 1'],
+        [MAX_TIME_COOKING, 'Максимальное время готовки не более 32767'])
 
     class Meta:
         model = Recipe
