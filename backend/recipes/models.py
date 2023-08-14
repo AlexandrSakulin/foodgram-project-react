@@ -11,7 +11,6 @@ from foodgram.global_constants import (MAX_LENGTH_AUTHOR,
                                        MAX_LENGTH_TAG_NAME,
                                        MAX_LENGTH_TAG_SLUG, MAX_TIME_COOKING,
                                        MIN_TIME_COOKING)
-
 from users.models import User
 
 
