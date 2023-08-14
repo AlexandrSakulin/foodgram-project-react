@@ -263,11 +263,13 @@ class ShoppingCartSerializer(RecipeShortSerializer):
         fields = ('user', 'recipe')
 
     def validate(self, data):
-        user = data['user']
-        if user.recipes_shoppingcart_related.filter(
-                recipe=data['recipe']).exists():
+        recipe = data['recipe']
+        if ShoppingCart.objects.filter(
+                user=data['user'],
+                recipe=recipe,
+        ).exists():
             raise serializers.ValidationError(
-                'Рецепт уже в списке покупок.'
+                'Рецепт уже в корзине'
             )
         return data
 
@@ -280,10 +282,12 @@ class FavoriteSerializer(RecipeShortSerializer):
         fields = ('user', 'recipe')
 
     def validate(self, data):
-        user = data['user']
-        if user.recipes_favorite_related.filter(
-                recipe=data['recipe']).exists():
+        recipe = data['recipe']
+        if Favorite.objects.filter(
+                user=data['user'],
+                recipe=recipe,
+        ).exists():
             raise serializers.ValidationError(
-                'Рецепт уже в избранном.'
+                'Рецепт уже в избранных'
             )
         return data
