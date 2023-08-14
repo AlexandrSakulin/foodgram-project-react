@@ -214,9 +214,9 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         """Создать ингредиент."""
         for ingredient in ingredients:
             IngredientInRecipe.objects.create(
-                ingredient_id=ingredient('id'),
+                ingredient_id=ingredient.get('id'),
                 recipe=recipe,
-                amount=ingredient('amount'),
+                amount=ingredient.get('amount'),
             )
 
     def create(self, data):
