@@ -11,6 +11,7 @@ from foodgram.global_constants import (MAX_LENGTH_AUTHOR,
                                        MAX_LENGTH_TAG_NAME,
                                        MAX_LENGTH_TAG_SLUG, MAX_TIME_COOKING,
                                        MIN_TIME_COOKING)
+# МНЕ ОЧЕНЬ СТЫДНО, ПРОШУ ПРОЩЕНИЯ
 from users.models import User
 
 
@@ -131,13 +132,13 @@ class IngredientInRecipe(models.Model):
     """ Модель связи ингредиента и рецепта. """
     recipe = models.ForeignKey(
         Recipe,
-        on_delete=models.CASCADE,
-        related_name='recipe_ingredients'
+        related_name='recipe_ingredients',
+        on_delete=models.CASCADE
     )
     ingredients = models.ForeignKey(
         Ingredient,
-        on_delete=models.CASCADE,
         related_name='recipe_ingredients',
+        on_delete=models.CASCADE,
         verbose_name='Ингредиенты'
     )
     amount = models.PositiveSmallIntegerField(
