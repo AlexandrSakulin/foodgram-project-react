@@ -125,7 +125,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(many=True)
+    ingredients = IngredientInRecipeSerializer(source='recipe_ingredients')
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -133,17 +133,20 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, obj):
         """Получить список избранного."""
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return Favorite.objects.filter(user=request.user, recipe=obj).exists()
+        return (
+            request.user.is_authenticated
+            and obj.favorites.filter(
+                user=request.user).exists()
+        )
 
     def get_is_in_shopping_cart(self, obj):
         """Получить список покупок."""
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return ShoppingCart.objects.filter(
-            user=request.user, recipe=obj).exists()
+        return (
+            request.user.is_authenticated
+            and obj.shopping_cart.filter(
+                user=request.user).exists()
+        )
 
     class Meta:
         model = Recipe
@@ -203,8 +206,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Необходимо выбрать хотя бы один тег.'
             )
-        ingredients_list = data['ingredients']
 
+        ingredients_list = data['ingredients']
         if len(ingredients_list) != len(
                 set(obj['id'] for obj in ingredients_list)):
             raise serializers.ValidationError(
