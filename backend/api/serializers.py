@@ -126,8 +126,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(
-        many=True, source='recipe_ingredients')
+    ingredients = serializers.SerializerMethodField(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -198,18 +197,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     author = UserReadSerializer(read_only=True, required=False)
     cooking_time = serializers.IntegerField(write_only=True)
 
-    class Meta:
-        model = Recipe
-        fields = (
-            'ingredients',
-            'tags',
-            'author',
-            'image',
-            'name',
-            'text',
-            'cooking_time'
-        )
-
     def validate(self, data):
 
         if len(data['tags']) != len(set(data['tags'])):
@@ -232,6 +219,18 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
             )
 
         return data
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'ingredients',
+            'tags',
+            'author',
+            'image',
+            'name',
+            'text',
+            'cooking_time'
+        )
 
     @staticmethod
     def create_ingredients(ingredients, recipe):
