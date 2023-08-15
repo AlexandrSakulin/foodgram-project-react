@@ -1,3 +1,4 @@
+from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -148,6 +149,17 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             and obj.shopping_cart.filter(
                 user=request.user).exists()
         )
+
+    def get_ingredients(self, obj):
+        """Custom queryset: filter IngredientInRecipe by recipe."""
+        recipe = obj
+        ingredients = recipe.ingredients.values(
+            'id',
+            'name',
+            'measurement_unit',
+            amount=F('recipe_ingredients__amount')
+        )
+        return ingredients
 
     class Meta:
         model = Recipe
