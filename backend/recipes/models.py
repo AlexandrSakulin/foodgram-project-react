@@ -206,3 +206,4 @@ class ShoppingCart(UserInRecipe):
                 fields=['recipe', 'user'],
             ),
         ]
+        verbose_name = 'Список покупок'

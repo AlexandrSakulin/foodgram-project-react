@@ -145,7 +145,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         return (
             request.user.is_authenticated
-            and ShoppingCart.filter(
+            and ShoppingCart.objects.filter(
                 user=request.user).exists()
         )
 
