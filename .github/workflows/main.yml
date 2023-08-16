@@ -67,7 +67,6 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
 
-
             rm -r .env        
             touch .env
 
