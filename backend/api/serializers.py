@@ -1,5 +1,5 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
-# from django.db.models import F
+from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from foodgram.global_constants import (MAX_AMOUNT_INGRIDIENTS,
@@ -127,12 +127,12 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
-    ingredients = IngredientInRecipeSerializer(
-        many=True,
-        source='recipe_ingredients'
-    )
-    # Если переделываю так, то не подгружает ингридиенты в рецепт
-    # ingredients = serializers.SerializerMethodField(read_only=True)
+    # ingredients = IngredientInRecipeSerializer(
+    #     many=True,
+    #     source='recipe_ingredients'
+    # )
+    # нет, это тоже не помогло, может баг ловит
+    ingredients = serializers.SerializerMethodField(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -155,16 +155,16 @@ class RecipeReadSerializer(serializers.ModelSerializer):
                 user=request.user).exists()
         )
 
-    # def get_ingredients(self, obj):
-    #     """Custom queryset: filter IngredientInRecipe by recipe."""
-    #     recipe = obj
-    #     ingredients = recipe.ingredients.values(
-    #         'id',
-    #         'name',
-    #         'measurement_unit',
-    #         amount=F('recipe_ingredients__amount')
-    #     )
-    #     return ingredients
+    def get_ingredients(self, obj):
+        """Custom queryset: filter IngredientInRecipe by recipe."""
+        recipe = obj
+        ingredients = recipe.ingredients.values(
+            'id',
+            'name',
+            'measurement_unit',
+            amount=F('recipe_ingredients__amount')
+        )
+        return ingredients
 
     class Meta:
         model = Recipe
