@@ -1,14 +1,12 @@
-from django.db.models import F
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
-from rest_framework import serializers
-from rest_framework.fields import SerializerMethodField
-
-from foodgram.global_constants import (MAX_TIME_COOKING,
-                                       MIN_TIME_COOKING)
+from foodgram.global_constants import MAX_TIME_COOKING, MIN_TIME_COOKING
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
+from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 from users.models import Subscribe, User
 
 
