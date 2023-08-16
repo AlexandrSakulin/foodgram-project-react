@@ -199,7 +199,7 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = IngredientInRecipe
+        model = Ingredient
         fields = ('id', 'amount')
 
 
