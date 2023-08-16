@@ -186,7 +186,7 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField(
+    amount = serializers.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(MIN_AMOUNT_INGRIDIENTS, 'Не менее 1'),
             MaxValueValidator(MAX_AMOUNT_INGRIDIENTS, 'Не более 32767')]
