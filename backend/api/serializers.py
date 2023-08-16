@@ -1,4 +1,4 @@
-from django.db.models import F
+# from django.db.models import F
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -116,9 +116,6 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
-    amount = serializers.ReadOnlyField(
-        source='ingredient.amount'
-    )
 
     class Meta:
         model = IngredientInRecipe
@@ -130,9 +127,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
     tags = TagSerializer(many=True, read_only=True)
     author = UserReadSerializer(read_only=True)
-    # ingredients = IngredientInRecipeSerializer(source='recipe_ingredients')
+    ingredients = IngredientInRecipeSerializer(
+        many=True, source='recipe_ingredients')
     # Если переделываю так, то не подгружает ингридиенты в рецепт
-    ingredients = serializers.SerializerMethodField(read_only=True)
+    # ingredients = serializers.SerializerMethodField(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     image = Base64ImageField(max_length=None, use_url=True, required=False)
@@ -155,16 +153,16 @@ class RecipeReadSerializer(serializers.ModelSerializer):
                 user=request.user).exists()
         )
 
-    def get_ingredients(self, obj):
-        """Custom queryset: filter IngredientInRecipe by recipe."""
-        recipe = obj
-        ingredients = recipe.ingredients.values(
-            'id',
-            'name',
-            'measurement_unit',
-            amount=F('recipe_ingredients__amount')
-        )
-        return ingredients
+    # def get_ingredients(self, obj):
+    #     """Custom queryset: filter IngredientInRecipe by recipe."""
+    #     recipe = obj
+    #     ingredients = recipe.ingredients.values(
+    #         'id',
+    #         'name',
+    #         'measurement_unit',
+    #         amount=F('recipe_ingredients__amount')
+    #     )
+    #     return ingredients
 
     class Meta:
         model = Recipe
@@ -187,8 +185,8 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
     amount = serializers.IntegerField(
-        [MIN_AMOUNT_INGRIDIENTS, 'Минимальное количество ингридиентов 1'],
-        [MAX_AMOUNT_INGRIDIENTS, 'Максимальное количество ингридиентов 100']
+        validators=[MIN_AMOUNT_INGRIDIENTS, 'Минимальное количество ингридиентов 1',
+                    MAX_AMOUNT_INGRIDIENTS, 'Максимальное количество ингридиентов 100']
     )
 
     class Meta:
@@ -205,8 +203,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField(max_length=None, use_url=True, required=False)
     author = UserReadSerializer(read_only=True, required=False)
     cooking_time = serializers.IntegerField(
-        [MIN_TIME_COOKING, 'Минимальное время готовки не менее 1'],
-        [MAX_TIME_COOKING, 'Максимальное время готовки не более 32767']
+        validators=[MIN_TIME_COOKING, 'Минимальное время готовки не менее 1',
+                    MAX_TIME_COOKING, 'Максимальное время готовки не более 32767']
     )
 
     def validate(self, data):
