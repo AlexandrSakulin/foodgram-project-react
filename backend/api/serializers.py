@@ -189,11 +189,12 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField(
         validators=(
             MinValueValidator(MIN_AMOUNT_INGRIDIENTS, 'Не менее 1'),
-            MaxValueValidator(MAX_AMOUNT_INGRIDIENTS, 'Не более 32767'))
+            MaxValueValidator(MAX_AMOUNT_INGRIDIENTS, 'Не более 32767')
+        )
     )
 
     class Meta:
-        model = IngredientInRecipe
+        model = Ingredient
         fields = ('id', 'amount')
 
 
