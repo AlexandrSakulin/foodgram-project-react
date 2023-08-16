@@ -1,4 +1,5 @@
 # from django.db.models import F
+from django.core.validators import MaxValueValidator, MinValueValidator
 from djoser import serializers as ds
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -185,10 +186,13 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
     amount = serializers.IntegerField(
-        validators=[MIN_AMOUNT_INGRIDIENTS,
-                    'Минимальное количество ингридиентов 1',
-                    MAX_AMOUNT_INGRIDIENTS,
-                    'Максимальное количество ингридиентов 100']
+        validators=(
+            MinValueValidator(MIN_AMOUNT_INGRIDIENTS,
+                              'Минимальное количество ингридиентов 1'),
+            MaxValueValidator(MAX_AMOUNT_INGRIDIENTS,
+                              'Максимальное количество ингридиентов 100')
+        )
+
     )
 
     class Meta:
@@ -205,10 +209,12 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField(max_length=None, use_url=True, required=False)
     author = UserReadSerializer(read_only=True, required=False)
     cooking_time = serializers.IntegerField(
-        validators=[MIN_TIME_COOKING,
-                    'Минимальное время готовки не менее 1',
-                    MAX_TIME_COOKING,
-                    'Максимальное время готовки не более 32767']
+        validators=(
+            MinValueValidator(MIN_TIME_COOKING,
+                              'Минимальное время готовки не менее 1'),
+            MaxValueValidator(MAX_TIME_COOKING,
+                              'Максимальное время готовки не более 32767')
+        )
     )
 
     def validate(self, data):
