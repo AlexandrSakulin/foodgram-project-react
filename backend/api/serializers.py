@@ -31,7 +31,7 @@ class UserReadSerializer(ds.UserSerializer):
 
     def get_is_subscribed(self, user):
         request = self.context.get('request')
-        return (request.user.is_authenticated and user.follower.filter(
+        return (request.user.is_authenticated and user.author.filter(
             user=request.user).exists())
 
 
