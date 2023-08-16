@@ -2,7 +2,6 @@ from django.core.validators import (MaxValueValidator, MinValueValidator,
                                     RegexValidator)
 from django.db import models
 from django.db.models import UniqueConstraint
-
 from foodgram.global_constants import (MAX_AMOUNT_INGRIDIENTS,
                                        MAX_LENGTH_AUTHOR,
                                        MAX_LENGTH_INGREDIENT_MEAUNIT,
