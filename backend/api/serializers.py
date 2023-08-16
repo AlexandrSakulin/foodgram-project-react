@@ -5,9 +5,7 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 
-from foodgram.global_constants import (MAX_AMOUNT_INGRIDIENTS,
-                                       MAX_TIME_COOKING,
-                                       MIN_AMOUNT_INGRIDIENTS,
+from foodgram.global_constants import (MAX_TIME_COOKING,
                                        MIN_TIME_COOKING)
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
@@ -117,9 +115,6 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit'
     )
-    amount = serializers.ReadOnlyField(
-        source='ingredient.amount'
-    )
 
     class Meta:
         model = IngredientInRecipe
@@ -188,15 +183,8 @@ class IngredientInRecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Ингредиенты в рецепте """
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField(
-        validators=(
-            MinValueValidator(MIN_AMOUNT_INGRIDIENTS,
-                              'Минимальное количество ингридиентов 1'),
-            MaxValueValidator(MAX_AMOUNT_INGRIDIENTS,
-                              'Максимальное количество ингридиентов 100')
-        )
-
-    )
+    amount = serializers.IntegerField()
+# валидация сделанна в модели уже
 
     class Meta:
         model = Ingredient
